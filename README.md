@@ -7,8 +7,6 @@
 
 > **Windows 계열 OS 에서는 aioconsole 이 호환되지 않는것으로 나타났습니다. Windows 계열에서는 `DISABLE_AIOCONSOLE=False` 를 `DISABLE_AIOCONSOLE=True` 로 바꿔주세요**
 
-> ~~그래프 보기, 엔터시 즉각적 반응, 지연없는 시리얼 통신을 위해서 사실상 윈도우 OS 를 쓰지 않는것이 좋습니다만, 학교에 리눅스 계열 OS 가 설치된 기기가 없어 대응할 수 있도록 설정값을 조정했습니다~~
-
 ## 결과물
 
 |||
@@ -39,7 +37,7 @@ BAUDRATE=9600
 
 보드레이트는 아두이노에서 설정한대로 적어주면 됩니다 (Serial.begin(9600) 이면 9600, 대부분 건들일 필요 없음)
 
-> Windows 계열 OS (Windows 10, Windows 11) 에서는 `DISABLE_GRAPH=False` 를 `DISABLE_GRAPH=True` 로
+> Windows 계열 OS (Windows 10, Windows 11 등) 에서는 `DISABLE_GRAPH=False` 를 `DISABLE_GRAPH=True` 로
 > `DISABLE_AIOCONSOLE=False` 를 `DISABLE_AIOCONSOLE=True` 로 바꾸어주어야 코드가 정상작동합니다
 
 편집된 아두이노 코드파일은 sketch_may30a 에 들어있습니다.
@@ -74,3 +72,4 @@ template.xlsx 는 데이터가 들어가기 위한 틀에 해당하는 파일로
 
 **확인된 사항에 의하면, 윈도우 계열에서는 그래프가 켜져있는 상황에서 파이썬이 심각할정도로 느려짐이 확인되었습니다. Windows 계열에서는 `DISABLE_GRAPH=False` 를 `DISABLE_GRAPH=True` 로 바꿔주세요**
 **Windows 계열 OS 에서는 aioconsole 이 호환되지 않는것으로 나타났습니다. Windows 계열에서는 `DISABLE_AIOCONSOLE=False` 를 `DISABLE_AIOCONSOLE=True` 로 바꿔주세요**
+~~얼마나 윈도우가 혐오스러운지 모르겠습니다; 느려 터지기만 하면 모르겠는데 호환성도 박살나있고 똑바로 돌아가는게 전혀 없네요.~~
