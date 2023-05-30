@@ -1,0 +1,9 @@
+pandas
+matplotlib
+pyserial
+pyserial-asyncio
+asyncio
+xlrd
+openpyxl
+aioconsole
+numpy
