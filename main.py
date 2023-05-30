@@ -16,6 +16,9 @@ SERIAL_PORT="/dev/ttyACM0"
 # 보드레이트 bps (Serial.begin 에 넣은만큼 설정)
 BAUDRATE=9600
 
+# 윈도우에서 코드를 실행하는 경우 True 로 바꿔주세요
+DISABLE_GRAPH=False
+DISABLE_AIOCONSOLE=False
 
 # https://stackoverflow.com/questions/55409641/asyncio-run-cannot-be-called-from-a-running-event-loop-when-using-jupyter-no
 # 다른 스레드에서 async 함수를 asyncio 로 진행시킵니다
@@ -114,7 +117,10 @@ class FileHandler:
 class Readline:
     async def loop(self,callback):
         while True:
-            await callback(await aioconsole.ainput(''))
+            if DISABLE_AIOCONSOLE:
+                await callback(input(''))
+            else:
+                await callback(await aioconsole.ainput(''))
     def __init__(self,callback):
         self.killed = False
         run_async(self.loop,callback)
@@ -125,7 +131,7 @@ async def main():
     startAt = False
     skipFirstByte = 0 # 연결전 쓰래기 값을 제거하기 위해 첫번째 20 개의 결과를 스킵합니다
     fileHandler = FileHandler()
-    graph = GraphHandler()
+    if not DISABLE_GRAPH: graph = GraphHandler()
 
     # 아두이노에서 읽은 데이터를 , 을 기준으로 나눠줍니다
     # 그런 후, 메모리에 집어넣고 그래프로 표시합니다
@@ -155,8 +161,9 @@ async def main():
 
         # 그래프에 그리기, 출력하기
         sys.stdout.write("\033[K\r{},{}".format(datas[0],datas[1]))
-        bufferX,bufferY = fileHandler.getBuffer()
-        graph.animate(bufferX,bufferY)
+        if not DISABLE_GRAPH:
+            bufferX,bufferY = fileHandler.getBuffer()
+            graph.animate(bufferX,bufferY)
 
     arduino = Arduino(arduinoCallback)
 
@@ -164,7 +171,7 @@ async def main():
     # 메모리에 있던 데이터들을 엑셀로 저장합니다
     async def inputCallback(str:str):
         arduino.kill()
-        graph.kill()
+        if not DISABLE_GRAPH: graph.kill()
         print("\033[K\r파일 저장중 . . .")
         print("파일이 "+fileHandler.save()+" 에 저장되었습니다")
         print("종료합니다")
