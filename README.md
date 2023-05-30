@@ -3,8 +3,10 @@
 
 아두이노에서 측정한 진자운동 데이터를 pandas 라이브러리를 통해 xlsx 파일로 내보내며, matplotlib 라이브러리를 통해 실시간 미리보기를 보여줍니다.
 
-> **확인된 사항에 의하면, 윈도우 계열에서는 그래프가 켜져있는 상황에서 파이썬이 심각할정도로 느려짐이 확인되었습니다. Windows 계엘에서는 `DISABLE_GRAPH=False` 를 `DISABLE_GRAPH=True` 로 바꿔주세요**
+> **확인된 사항에 의하면, 윈도우 계열에서는 그래프가 켜져있는 상황에서 파이썬이 심각할정도로 느려짐이 확인되었습니다. Windows 계열에서는 `DISABLE_GRAPH=False` 를 `DISABLE_GRAPH=True` 로 바꿔주세요**
+
 > **Windows 계열 OS 에서는 aioconsole 이 호환되지 않는것으로 나타났습니다. Windows 계열에서는 `DISABLE_AIOCONSOLE=False` 를 `DISABLE_AIOCONSOLE=True` 로 바꿔주세요**
+
 > ~~그래프 보기, 엔터시 즉각적 반응, 지연없는 시리얼 통신을 위해서 사실상 윈도우 OS 를 쓰지 않는것이 좋습니다만, 학교에 리눅스 계열 OS 가 설치된 기기가 없어 대응할 수 있도록 설정값을 조정했습니다~~
 
 ## 결과물
@@ -37,6 +39,9 @@ BAUDRATE=9600
 
 보드레이트는 아두이노에서 설정한대로 적어주면 됩니다 (Serial.begin(9600) 이면 9600, 대부분 건들일 필요 없음)
 
+> Windows 계열 OS (Windows 10, Windows 11) 에서는 `DISABLE_GRAPH=False` 를 `DISABLE_GRAPH=True` 로
+> `DISABLE_AIOCONSOLE=False` 를 `DISABLE_AIOCONSOLE=True` 로 바꾸어주어야 코드가 정상작동합니다
+
 편집된 아두이노 코드파일은 sketch_may30a 에 들어있습니다.
 
 수정한 파이썬 파일을 저장하고, 아두이노 편집기를 완전히 끕니다 (중요! 파이썬과 아두이노 편집기가 같이 아두이노 출력을 읽으려 하면 오류가 발생합니다.)
@@ -67,5 +72,5 @@ template.xlsx 는 데이터가 들어가기 위한 틀에 해당하는 파일로
 
 파일이 완전히 잘못되었다면, 유닉스 호환 시스템에서(macos, linux, bsd, ... 등의 os) 실행해야할 수 있습니다.
 
-**확인된 사항에 의하면, 윈도우 계열에서는 그래프가 켜져있는 상황에서 파이썬이 심각할정도로 느려짐이 확인되었습니다. Windows 계엘에서는 `DISABLE_GRAPH=False` 를 `DISABLE_GRAPH=True` 로 바꿔주세요**
+**확인된 사항에 의하면, 윈도우 계열에서는 그래프가 켜져있는 상황에서 파이썬이 심각할정도로 느려짐이 확인되었습니다. Windows 계열에서는 `DISABLE_GRAPH=False` 를 `DISABLE_GRAPH=True` 로 바꿔주세요**
 **Windows 계열 OS 에서는 aioconsole 이 호환되지 않는것으로 나타났습니다. Windows 계열에서는 `DISABLE_AIOCONSOLE=False` 를 `DISABLE_AIOCONSOLE=True` 로 바꿔주세요**
