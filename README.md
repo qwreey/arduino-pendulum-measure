@@ -3,6 +3,12 @@
 
 아두이노에서 측정한 진자운동 데이터를 pandas 라이브러리를 통해 xlsx 파일로 내보내며, matplotlib 라이브러리를 통해 실시간 미리보기를 보여줍니다.
 
+## 결과물
+
+|||
+|-|-|
+| ![graph](./images/graph.png) | ![xlsx](./images/xlsx.png) |
+
 ## 사용과정
 
 [python.org](https://www.python.org) 에서 파이썬을 다운받습니다.
