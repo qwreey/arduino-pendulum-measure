@@ -7,7 +7,9 @@ import aioconsole
 import sys
 import matplotlib.pyplot as pyplot
 import warnings
+import matplotlib.style as mplstyle
 warnings.filterwarnings("ignore")
+mplstyle.use('fast')
 
 # 설정
 # 시리얼 포트(윈도우: 디바이스포트명 COM1 COM2 COM3, 리눅스: /dev/ttyS0 ...)
@@ -71,19 +73,26 @@ class GraphHandler:
     def kill(self):
         self.killed = True
     def __init__(self):
+        self.bufferX, self.bufferY, self.length = [],[],0
         self.killed = False
         self.fig, self.ax = pyplot.subplots()
         pyplot.set_loglevel('error')
         pyplot.show(block=False)
         self.thread = run_async(self.loop)
     def animate(self, x, y):
-        x = x[-200:]  # 최근 20 초의 기록
-        y = y[-200:]
-
+        # 최근 20 초의 기록만 보여줌
+        self.bufferX.append(x)
+        self.bufferY.append(y)
+        self.length += 1
+        if self.length > 200:
+            self.length -= 1
+            del self.bufferX[0]
+            del self.bufferY[0]
+        
         self.ax.clear()
         self.ax.set_ylim(0,40)
-        self.ax.plot(x, y)
-        pyplot.draw()
+        line = self.ax.plot(self.bufferX, self.bufferY)
+        self.ax.draw_artist(line)
 
 # 엑셀 파일을 작성합니다
 class FileHandler:
