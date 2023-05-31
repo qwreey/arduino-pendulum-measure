@@ -7,20 +7,20 @@ import aioconsole
 import sys
 import matplotlib.pyplot as pyplot
 import warnings
-import matplotlib.style as mplstyle
+#import matplotlib.style as mplstyle
 warnings.filterwarnings("ignore")
-mplstyle.use('fast')
+#mplstyle.use('fast')
 
 # 설정
 # 시리얼 포트(윈도우: 디바이스포트명 COM1 COM2 COM3, 리눅스: /dev/ttyS0 ...)
-SERIAL_PORT="/dev/ttyACM0"
+SERIAL_PORT="COM8"
 
 # 보드레이트 bps (Serial.begin 에 넣은만큼 설정)
 BAUDRATE=9600
 
 # 윈도우에서 코드를 실행하는 경우 True 로 바꿔주세요
-DISABLE_GRAPH=False
-DISABLE_AIOCONSOLE=False
+DISABLE_GRAPH=True
+DISABLE_AIOCONSOLE=True
 
 # https://stackoverflow.com/questions/55409641/asyncio-run-cannot-be-called-from-a-running-event-loop-when-using-jupyter-no
 # 다른 스레드에서 async 함수를 asyncio 로 진행시킵니다
@@ -88,11 +88,10 @@ class GraphHandler:
             self.length -= 1
             del self.bufferX[0]
             del self.bufferY[0]
-        
         self.ax.clear()
         self.ax.set_ylim(0,40)
-        line = self.ax.plot(self.bufferX, self.bufferY)
-        self.ax.draw_artist(line)
+        self.ax.plot(self.bufferX, self.bufferY)
+        pyplot.draw()
 
 # 엑셀 파일을 작성합니다
 class FileHandler:
