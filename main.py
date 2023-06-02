@@ -4,10 +4,11 @@ import threading
 import datetime
 import pandas
 import aioconsole
-import sys
 import matplotlib.pyplot as pyplot
 import matplotlib
 import math
+import os
+import subprocess
 
 # 설정
 # 시리얼 포트(윈도우: 디바이스포트명 COM1 COM2 COM3, 리눅스: /dev/ttyS0 ...)
@@ -75,10 +76,13 @@ class Arduino:
 # 그래프를 그립니다
 class GraphHandler:
     def __init__(self):
-        self.bufferX, self.bufferY, self.length = [],[],0
-        self.fig, self.ax = pyplot.subplots()
-        pyplot.set_loglevel('error')
-        pyplot.show(block=False)
+        self.process = subprocess.Popen(["C:\\Windows\\py.exe", "plotprocess.py"], stdin=subprocess.PIPE)
+    def animate(self,x,y):
+        self.process.stdin.write(("{},{}\n".format(x,y)).encode())
+    def kill(self):
+        self.process.kill()
+
+"""
     def animate(self, x, y):
         # 최근 20 초의 기록만 보여줌
         self.bufferX.append(x)
@@ -93,7 +97,8 @@ class GraphHandler:
         self.ax.plot(self.bufferX, self.bufferY)
         pyplot.draw()
         self.fig.canvas.flush_events()
-
+"""
+        
 # 엑셀 파일을 작성합니다
 class FileHandler:
     # 시간을 기준으로 출력 파일 이름을 생성합니다
