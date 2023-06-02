@@ -6,10 +6,8 @@ import pandas
 import aioconsole
 import sys
 import matplotlib.pyplot as pyplot
-import warnings
-#import matplotlib.style as mplstyle
-warnings.filterwarnings("ignore")
-#mplstyle.use('fast')
+import matplotlib
+import math
 
 # 설정
 # 시리얼 포트(윈도우: 디바이스포트명 COM1 COM2 COM3, 리눅스: /dev/ttyS0 ...)
@@ -19,8 +17,11 @@ SERIAL_PORT="COM8"
 BAUDRATE=9600
 
 # 윈도우에서 코드를 실행하는 경우 True 로 바꿔주세요
-DISABLE_GRAPH=True
+DISABLE_GRAPH=False
 DISABLE_AIOCONSOLE=True
+
+# 아두이노 없는 상황에서 테스트를 위한 부분
+TEST_MODE=True
 
 # https://stackoverflow.com/questions/55409641/asyncio-run-cannot-be-called-from-a-running-event-loop-when-using-jupyter-no
 # 다른 스레드에서 async 함수를 asyncio 로 진행시킵니다
@@ -46,6 +47,13 @@ def run_async(func, *args, **kwargs):
 # 자세한 사항은 pyserial asyncio 라이브러리 문서 참조
 # : https://pyserial-asyncio.readthedocs.io/en/latest/shortintro.html#protocol-example
 class Arduino:
+    async def testLoop(self,serial_port,baudrate):
+        time=0
+        while True:
+            await self.callback("{},{}\n".format(int(time),int(math.sin(time/100*3.14)*20)))
+            time+=1
+            asyncio.sleep(1)
+            if self.killed: break
     async def loop(self,serial_port,baudrate):
         self.reader, self.writer = await serial_asyncio.open_serial_connection(url=serial_port, baudrate=baudrate)
         while True:
@@ -54,31 +62,23 @@ class Arduino:
             try: await self.callback((await self.reader.readline()).decode("utf-8"))
             except: pass
     def connect(self,serial_port,baudrate):
-        self.thread = run_async(self.loop,serial_port,baudrate)
+        self.thread = run_async(self.test and self.testLoop or self.loop,serial_port,baudrate)
     def kill(self):
         self.killed = True
+        if self.test: return
         self.thread.join(3)
-    def __init__(self,callback):
+    def __init__(self,test,callback):
         self.callback = callback
+        self.test = test
         self.killed = False
 
 # 그래프를 그립니다
 class GraphHandler:
-    async def loop(self):
-        while True:
-            if self.killed:
-                pyplot.close()
-                break
-            pyplot.pause(1)
-    def kill(self):
-        self.killed = True
     def __init__(self):
         self.bufferX, self.bufferY, self.length = [],[],0
-        self.killed = False
         self.fig, self.ax = pyplot.subplots()
         pyplot.set_loglevel('error')
         pyplot.show(block=False)
-        self.thread = run_async(self.loop)
     def animate(self, x, y):
         # 최근 20 초의 기록만 보여줌
         self.bufferX.append(x)
@@ -92,6 +92,7 @@ class GraphHandler:
         self.ax.set_ylim(0,40)
         self.ax.plot(self.bufferX, self.bufferY)
         pyplot.draw()
+        self.fig.canvas.flush_events()
 
 # 엑셀 파일을 작성합니다
 class FileHandler:
@@ -107,10 +108,6 @@ class FileHandler:
     # 결과값을 하나 추가합니다
     def append(self,datas):
         self.file.loc[len(self.file)] = datas
-
-    # 그래프를 그리기 위해서 메모리값을 전달합니다
-    def getBuffer(self):
-        return self.file[self.file.columns[0]].to_numpy(),self.file[self.file.columns[1]].to_numpy()
 
     # 파일을 저장합니다
     def save(self):
@@ -170,16 +167,14 @@ async def main():
         # 그래프에 그리기, 출력하기
         sys.stdout.write("\033[K\r{},{}".format(datas[0],datas[1]))
         if not DISABLE_GRAPH:
-            bufferX,bufferY = fileHandler.getBuffer()
-            graph.animate(bufferX,bufferY)
+            graph.animate(datas[0],datas[1])
 
-    arduino = Arduino(arduinoCallback)
+    arduino = Arduino(TEST_MODE,arduinoCallback)
 
     # 입력이 들어오면 코드를 멈춥니다
     # 메모리에 있던 데이터들을 엑셀로 저장합니다
     async def inputCallback(str:str):
         arduino.kill()
-        if not DISABLE_GRAPH: graph.kill()
         print("\033[K\r파일 저장중 . . .")
         print("파일이 "+fileHandler.save()+" 에 저장되었습니다")
         print("종료합니다")
