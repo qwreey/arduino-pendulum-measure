@@ -24,7 +24,7 @@ def updateLine():
     line.set_data(x, y)
     ax.set_ylim(0,40)
     last = x[len(x)-1]
-    ax.set_xlim(last-20,last)
+    ax.set_xlim(last-60,last)
     fig.canvas.draw()
     fig.canvas.flush_events()
 
