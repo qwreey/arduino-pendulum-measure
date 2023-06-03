@@ -12,13 +12,13 @@ import sys
 # -----------------------------------------------------------------------------------
 # 설정
 # 시리얼 포트(윈도우: 디바이스포트명 COM1 COM2 COM3, 리눅스: /dev/ttyS0 ...)
-SERIAL_PORT="COM8"
+SERIAL_PORT=input("아두이노가 연결된 포트를 입력해주세요 (예시: COM1, COM2, COM3, /dev/ttyS9, /dev/ttyACM0)\n연결된 포트를 모른다면 아두이노 편집기에서 연결된 기기를 확인하세요\n(주의: 이 프로그램은 아두이노 편집기가 꺼진 상황에서만 사용가능합니다.)\n(프로그램 테스트를 위해 센서값 대신 sin 함수를 사용하려면 TEST 를 입력하세요)\n SERIAL_PORT: ")
 
 # 보드레이트 bps (Serial.begin 에 넣은만큼 설정)
-BAUDRATE=9600
+BAUDRATE=SERIAL_PORT!="TEST" and input("아두이노에 설정한 보드레이트를 입력하세요 (Serial.begin 에 넣은 숫자를 쓰세요)\n (미입력시 기본 9600) BAUDRATE: ")
 
 # 아두이노 없는 상황에서 테스트를 위한 부분, 사인 함수로 대신합니다
-TEST_MODE=True
+TEST_MODE=False
 
 # 그래프를 보여주지 않습니다
 DISABLE_GRAPH=False
@@ -32,6 +32,11 @@ SUBPROCESS_GRAPH=True
 # 호환성을 위해 AsyncIO Console 라이브러리를 비활성화합니다
 DISABLE_AIOCONSOLE=True
 # -----------------------------------------------------------------------------------
+
+if SERIAL_PORT == "": SERIAL_PORT="COM4"
+if SERIAL_PORT == "TEST": TEST_MODE = True
+if BAUDRATE == "": BAUDRATE = 9600
+else: BAUDRATE = int(BAUDRATE)
 
 # https://stackoverflow.com/questions/55409641/asyncio-run-cannot-be-called-from-a-running-event-loop-when-using-jupyter-no
 # 다른 스레드에서 async 함수를 asyncio 로 진행시킵니다
