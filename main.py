@@ -121,7 +121,7 @@ class GraphHandler:
         self.bufferX.append(x)
         self.bufferY.append(y)
         self.length += 1
-        if self.length > 200:
+        if self.length > 600:
             self.length -= 1
             del self.bufferX[0]
             del self.bufferY[0]
