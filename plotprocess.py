@@ -14,7 +14,7 @@ def append(newX,newY):
     x.append(float(newX))
     y.append(float(newY))
     length += 1
-    if length > 200:
+    if length > 600:
         length -= 1
         del x[0]
         del y[0]
